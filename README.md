@@ -1,2 +1,1 @@
-# blog
-blog to post informative articles , adaptable to various subjects
+# Boas vindas ao repositório do projeto de blog!
