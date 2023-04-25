@@ -1,39 +1,29 @@
-import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const POSTS_QUERY = gql`
-query {
-    posts {
-      nodes {
-        id
-        title
-        content
-        date
-      }
-    }
-  }
-  
-`;
-const Post = () => {
-    const { loading, error, data } = useQuery(POSTS_QUERY);
-    const posts = data?.posts.nodes;
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error</p>;
+const Posts = () => {
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        axios.get('http://localhost:8000/wp-json/api/usuario')
+            .then(response => {
+                setPosts(response.data);
+            });
+    }, []);
+
     return (
-        posts.map((post) => {
-            return (
-                <div key={post.id}>
-                    <h2>{post.title}</h2>
-                    <p>{post.content}</p>
-                    <p>{post.date}</p>
-                </div>
-            )
-        }
-        )
-   
-    )
-}
+        <ul>
+            {posts.map(post => {
+                const content = post.content.replace(/<!--[\s\S]*?-->/g, '');
+                return (
+                    <li key={post.id}>
+                        <h2>{post.title}</h2>
+                        <p>{content}</p>
+                    </li>
+                );
+            })}
+        </ul>
+    );
+};
 
-
-
-export default Post;
+export default Posts;

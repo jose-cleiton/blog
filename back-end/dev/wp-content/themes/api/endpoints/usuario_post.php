@@ -1,11 +1,19 @@
 <?php
 
 function api_usuario_post($request) {
-    $response = array(
-        'nome' => 'João',
-        'email' => 'joao@example.com',
-        'idade' => 30
+    $args = array(
+        'numberposts' => -1,
+        'post_type' => 'post'
     );
+    $posts = get_posts($args);
+    $response = array();
+    foreach ($posts as $post) {
+        $response[] = array(
+            'id' => $post->ID,
+            'title' => $post->post_title,
+            'content' => $post->post_content
+        );
+    }
     return rest_ensure_response($response);
 }
 
