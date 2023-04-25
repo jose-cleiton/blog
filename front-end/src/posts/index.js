@@ -9,7 +9,7 @@ const Posts = () => {
             .then(response => {
                 const data = response.data.map(post => ({
                     ...post,
-                    content: post.content.replace(/<!--[\s\S]*?-->/g, '').replace(/<\/?p>/g, '')
+                    content: post.content.replace(/<!--[\s\S]*?-->/g, '').replace(/<\/?p>/g, '').replace(/<\/?li>/g, '').replace(/<\/?ol>/g, '')
                 }));
                 setPosts(data);
             });
