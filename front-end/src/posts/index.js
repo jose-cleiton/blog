@@ -7,21 +7,22 @@ const Posts = () => {
     useEffect(() => {
         axios.get('http://localhost:8000/wp-json/api/usuario')
             .then(response => {
-                setPosts(response.data);
+                const data = response.data.map(post => ({
+                    ...post,
+                    content: post.content.replace(/<!--[\s\S]*?-->/g, '').replace(/<\/?p>/g, '')
+                }));
+                setPosts(data);
             });
     }, []);
 
     return (
         <ul>
-            {posts.map(post => {
-                const content = post.content.replace(/<!--[\s\S]*?-->/g, '');
-                return (
-                    <li key={post.id}>
-                        <h2>{post.title}</h2>
-                        <p>{content}</p>
-                    </li>
-                );
-            })}
+            {posts.map(post => (
+                <li key={post.id}>
+                    <h2>{post.title}</h2>
+                    <p>{post.content}</p>
+                </li>
+            ))}
         </ul>
     );
 };
