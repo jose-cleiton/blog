@@ -18,7 +18,7 @@ function api_usuario_post($request) {
 }
 
 function registrar_api_usuario_post(){
-    register_rest_route('api', '/usuario', array(
+    register_rest_route('api', '/posts', array(
         array(
             'methods' => 'GET',
             'callback' => 'api_usuario_post'

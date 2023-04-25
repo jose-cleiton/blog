@@ -5,7 +5,7 @@ const Posts = () => {
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8000/wp-json/api/usuario')
+        axios.get('http://localhost:8000/wp-json/api/posts')
             .then(response => {
                 const data = response.data.map(post => ({
                     ...post,
