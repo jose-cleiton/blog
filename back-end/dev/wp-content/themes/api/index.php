@@ -1,3 +1,3 @@
 <?php wp_head(); ?>
-<p>API</p>
+<h1>Deu certo!...</h1>
 <?php wp_footer(); ?>
