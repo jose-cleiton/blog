@@ -55,7 +55,7 @@ services:
       - ./back-end/dev:/var/www/html
       - ./back-end/htaccess_dev:/var/www/html/.htaccess
       - ./back-end/dev.ini:/usr/local/etc/php/conf.d/dev.ini
-      - front-end:/app-frontend
+      
 
 volumes:
   front-end:
