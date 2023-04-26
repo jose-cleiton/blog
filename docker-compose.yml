@@ -11,7 +11,8 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - front-end:/app-frontend
+      - ./front-end:/app-frontend
+      - /app-frontend/node_modules
     # Os `healthcheck` devem garantir que a aplicação
     # está operacional, antes de liberar o container
     healthcheck:
@@ -40,7 +41,7 @@ services:
     cap_add:
       - SYS_NICE # Deve omitir alertas menores
 
-  wordpress:
+  back-end:
     depends_on:
       - db
     image: wordpress:latest

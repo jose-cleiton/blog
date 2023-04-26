@@ -8,4 +8,6 @@ RUN npm install
 
 COPY . .
 
-CMD ["npm", "start"] 
+RUN chmod -R 777 /app-frontend
+
+CMD ["npm", "start"]
