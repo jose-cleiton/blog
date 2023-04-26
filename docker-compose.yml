@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  frontend:
+    build: ./front-end
+    ports:
+      - 3000:3000
+    platform: linux/x86_64
+    working_dir: /app-frontend
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - front-end:/app-frontend
+    # Os `healthcheck` devem garantir que a aplicação
+    # está operacional, antes de liberar o container
+    healthcheck:
+      test: ["CMD", "lsof", "-t", "-i:3000"]  # Caso utilize outra porta interna para o front, altere ela aqui também
+      timeout: 10s
+      retries: 5
+
+      
+  db:
+    image: mysql:8.0.21
+    volumes:
+      - ./back-end/db_data:/var/lib/mysql
+    ports:
+      - 3306:3306  
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+      MYSQL_ROOT_HOST: localhost
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"] # Deve aguardar o banco ficar operacional
+      timeout: 10s
+      retries: 5
+    cap_add:
+      - SYS_NICE # Deve omitir alertas menores
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    ports:
+      - "8000:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+    volumes:
+      - ./back-end/dev:/var/www/html
+      - ./back-end/htaccess_dev:/var/www/html/.htaccess
+      - ./back-end/dev.ini:/usr/local/etc/php/conf.d/dev.ini
+      - front-end:/app-frontend
+
+volumes:
+  front-end:
+  db_data:
