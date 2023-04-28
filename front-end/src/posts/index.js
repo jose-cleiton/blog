@@ -1,23 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import parse from 'html-react-parser';
+import fetchPosts from './fetchPosts';
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  const parseContent = (content) => {
-    return parse(content);
-  }
-
   useEffect(() => {
-    axios.get('http://localhost:8000/wp-json/api/post/')
-      .then(res => {
-        const data = res.data.map(post => ({
-          ...post,
-          content: parseContent(post.conteudo),
-        }));
+    fetchPosts()
+      .then(data => {
         setPosts(data);
         setIsLoading(false);
       })
