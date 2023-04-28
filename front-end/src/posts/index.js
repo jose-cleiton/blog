@@ -4,6 +4,8 @@ import parse from 'html-react-parser';
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   const parseContent = (content) => {
     return parse(content);
@@ -17,11 +19,22 @@ const Posts = () => {
           content: parseContent(post.conteudo),
         }));
         setPosts(data);
+        setIsLoading(false);
       })
       .catch(err => {
         console.log(err);
+        setHasError(true);
+        setIsLoading(false);
       });
   }, []);
+
+  if (isLoading) {
+    return <p>Carregando...</p>;
+  }
+
+  if (hasError) {
+    return <p>Ocorreu um erro ao carregar os posts...</p>;
+  }
 
   return (
     <div>
