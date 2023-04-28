@@ -4,54 +4,35 @@ import parse from 'html-react-parser';
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
+
+  const parseContent = (content) => {
+    return parse(content);
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/wp-json/wp/v2/posts');
-        const data = response.data.map(post => ({
+    axios.get('http://localhost:8000/wp-json/api/post/')
+      .then(res => {
+        const data = res.data.map(post => ({
           ...post,
-          content: parse(post.content.rendered)
+          content: parseContent(post.conteudo),
         }));
-        
         setPosts(data);
-        setIsLoading(false);
-      } catch (error) {
-        setHasError(true);
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }, []);
 
-  const renderPosts = () => {
-    if (isLoading) {
-      return <p>Carregando...</p>;
-    }
-
-    if (hasError) {
-      return <p>Ocorreu um erro ao carregar os posts.</p>;
-    }
-
-    return (
-      <ul>
-        {posts.map(post => (
-          <li key={post.id}>
-            <h2>{post.title.rendered}</h2>
-            <p>{post.content}</p>
-          </li>
-        ))}
-      </ul>
-    );
-  };
-
   return (
-    <>
-      {renderPosts()}
-    </>
+    <div>
+      <h1>Posts</h1>
+      {posts.map(post => (
+        <div key={post.id}>
+          <h2>{post.titulo}</h2>
+          <div>{post.content}</div>
+        </div>
+      ))}
+    </div>
   );
 };
 
