@@ -13,7 +13,6 @@ services:
     volumes:
       - ./front-end:/app-frontend:rw
       - /app-frontend/node_modules
-    user: "1000:1000"  
     # Os `healthcheck` devem garantir que a aplicação
     # está operacional, antes de liberar o container
     healthcheck:
@@ -57,7 +56,13 @@ services:
       - ./back-end/dev:/var/www/html:rw
       - ./back-end/htaccess_dev:/var/www/html/.htaccess:rw
       - ./back-end/dev.ini:/usr/local/etc/php/conf.d/dev.ini
-    user: "1000:1000"   
+
+  set-permissions:
+    image: busybox
+    command: ["sh", "-c", "chmod -R 777 /app-frontend && chmod -R 777 /back-end"]
+    depends_on:
+      - frontend
+      - back-end
 
 volumes:
   front-end:
