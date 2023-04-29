@@ -8,6 +8,9 @@ RUN npm install
 
 COPY . .
 
-RUN chmod -R 777 /app-frontend
+RUN mkdir -p /app-frontend/node_modules/.cache && \
+    chown -R node:node /app-frontend/node_modules/.cache
+
+USER node
 
 CMD ["npm", "start"]
