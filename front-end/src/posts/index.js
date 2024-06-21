@@ -1,30 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import fetchPosts from './fetchPosts';
 
 const Posts = () => {
-    const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
-    useEffect(() => {
-        axios.get('http://localhost:8000/wp-json/api/posts')
-            .then(response => {
-                const data = response.data.map(post => ({
-                    ...post,
-                    content: post.content.replace(/<!--[\s\S]*?-->/g, '').replace(/<\/?p>/g, '').replace(/<\/?li>/g, '').replace(/<\/?ol>/g, '')
-                }));
-                setPosts(data);
-            });
-    }, []);
+  useEffect(() => {
+    fetchPosts()
+      .then(data => {
+        setPosts(data);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.log(err);
+        setHasError(true);
+        setIsLoading(false);
+      });
+  }, []);
 
-    return (
-        <ul>
-            {posts.map(post => (
-                <li key={post.id}>
-                    <h2>{post.title}</h2>
-                    <p>{post.content}</p>
-                </li>
-            ))}
-        </ul>
-    );
+  if (isLoading) {
+    return <p>Carregando...</p>;
+  }
+
+  if (hasError) {
+    return <p>Ocorreu um erro ao carregar os posts...</p>;
+  }
+
+  return (
+    <div>
+      <h1>Posts</h1>
+      {posts.map(post => (
+        <div key={post.id}>
+          <h2>{post.titulo}</h2>
+          <div>{post.content}</div>
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export default Posts;
